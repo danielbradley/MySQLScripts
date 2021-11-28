@@ -25,6 +25,17 @@ then
 	USER=root
 	DB=$2
 
+	if [ "" = "$BACKUP" ]
+	then
+		BACKUP="../../bak"
+	fi
+
+elif [ "$NAME" = "install.sh" ]
+then
+	MODE="install"
+	USER=root
+	DB=$2
+
 else
 	echo "Aborting: call as either 'mysql.sh', or 'backup.sh'"
 	exit -1
@@ -58,11 +69,6 @@ then
 	USER="root"
 fi
 
-if [ "" = "$BACKUP" ]
-then
-	BACKUP="../../bak"
-fi
-
 function usage()
 {
 	if [ "$NAME" = "mysql.sh" ]
@@ -71,7 +77,11 @@ function usage()
 
 	elif [ "$NAME" = "backup.sh" ]
 	then
-		echo "Usage: ./backup.sh <hostname> <dbname> [backupdir=../../bak]"
+		echo "Usage: ./backup.sh <hostname> <dbname> [backup dir=../../bak]"
+
+	elif [ "$NAME" = "install.sh" ]
+	then
+		echo "Usage: ./install.sh <hostname> <dbname> [backup file]"
 
 	fi
 	exit -1
@@ -82,6 +92,8 @@ function main()
 	local ip=`dig +short $HOST`
 	local use_ssl="TRUE"
 	local flags="--force -u $USER -p"
+	local version=`cat VERSION`
+	local install=`ls _install/${version}/*.sql`
 
 	if [ "192" = "${ip:0:3}" ]
 	then
@@ -118,7 +130,7 @@ function main()
 
 	elif [ "$NAME" = "backup.sh" ]
 	then
-		flags+=" --column-statistics=0 --lock-tables --no-create-info --complete-insert --replace --set-gtid-purged=OFF --skip-triggers"
+		flags+=" -f --column-statistics=0 --lock-tables --no-create-info --complete-insert --replace --set-gtid-purged=OFF --skip-triggers"
 
 		if [ -z "$DB" ]
 		then
@@ -134,6 +146,35 @@ function main()
 
 		echo ${MYSQLDUMP} ${flags} ${DB} \> "${BACKUP}/${HOST}-${DB}-${DATE}.sql"
 		     ${MYSQLDUMP} ${flags} ${DB}  > "${BACKUP}/${HOST}-${DB}-${DATE}.sql"
+
+	elif [ "$NAME" = "install.sh" ]
+	then
+
+		if [ -z "$DB" ]
+		then
+			echo "Aborting, no database name specified"
+			usage
+		fi
+
+		if [ ! -f "${install}" ]
+		then
+			echo "Aborting, no install sql found in: _install/${version}/"
+			usage
+		fi
+
+		if [ -n "$BACKUP" -a ! -f "$BACKUP" ]
+		then
+			echo "Aborting, specified backup file not found: $BACKUP"
+			usage
+		fi
+
+		if [ -n "$BACKUP" ]
+		then
+			echo "create database ${DB} CHARACTER SET=utf8; use ${DB};" | cat - "${install}" "${BACKUP}" | ${MYSQL} ${flags} 2>&1
+		else
+			echo "create database ${DB} CHARACTER SET=utf8; use ${DB};" | cat - "${install}"             | ${MYSQL} ${flags} 2>&1
+		fi
+
 	fi
 }
 
