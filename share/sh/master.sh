@@ -95,7 +95,7 @@ function main()
 	local version=`cat VERSION`
 	local install=`ls _install/${version}/*.sql`
 
-	if [ "192" = "${ip:0:3}" ]
+	if [ "192" = "${ip:0:3}" -o "127" = "${ip:0:3}" ]
 	then
 		use_ssl="FALSE"
 	fi
