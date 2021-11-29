@@ -75,7 +75,7 @@ if [ "" = "$MYSQL" ]
 then
 	if [ "Darwin" = "$OSNAME" ]
 	then
-		MYSQL=$(BASE)/libexec/mysql/sbin/$OSNAME/mysql
+		MYSQL=${BASE}/libexec/mysql/sbin/$OSNAME/mysql
 	else
 		echo "Error: could not locate 'mysql'"
 		exit -1
@@ -86,7 +86,7 @@ if [ "" = "$MYSQLDUMP" ]
 then
 	if [ "Darwin" = "$OSNAME" ]
 	then
-		MYSQLDUMP=$(BASE)/libexec/mysql/sbin/$OSNAME/mysqldump
+		MYSQLDUMP=${BASE}/libexec/mysql/sbin/$OSNAME/mysqldump
 	else
 		echo "Error: could not locate 'mysqldump'"
 		exit -1
