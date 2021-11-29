@@ -1,5 +1,34 @@
 #!/bin/bash
 
+function abspath()
+{
+        local abs=$( cd "$(dirname $1)"; pwd -P )
+        local name=`basename $1`
+        echo "$abs/$name"
+}
+
+function lnkpath()
+{
+        local dirname=`dirname $1`
+        local linkpath=`readlink $1`
+
+        if [ -z "$linkpath" ]
+        then
+                echo $1
+
+        else
+                echo $dirname/$linkpath
+        fi
+}
+
+function realpath()
+{
+        local abspath=`abspath $1`
+        local lnkpath=`lnkpath $abspath`
+
+        echo $lnkpath
+}
+
 FULL=`realpath $0`
 NAME=`basename $0`
 SH=`dirname $FULL`
@@ -107,7 +136,7 @@ function main()
 
 	elif [ "TRUE" = "$use_ssl" ]
 	then
-		if ["" = "$ip" ]
+		if [ "" = "$ip" ]
 		then
 			echo "ERROR: could not find IP for remote db host: $HOST"
 			exit -1
