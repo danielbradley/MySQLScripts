@@ -1,5 +1,13 @@
 #!/bin/bash
 
+COLUMN_STATISTICS_FLAG=""
+
+if [ "$1" = "--ignore-column-statistics" ]
+then
+	COLUMN_STATISTICS="--column-statistics=0"
+	shift
+fi
+
 function abspath()
 {
         local abs=$( cd "$(dirname $1)"; pwd -P )
@@ -159,7 +167,7 @@ function main()
 
 	elif [ "$NAME" = "backup.sh" ]
 	then
-		flags+=" -f --column-statistics=0 --lock-tables --no-create-info --complete-insert --replace --set-gtid-purged=OFF --skip-triggers"
+		flags+=" -f ${COLUMN_STATISTICS} --lock-tables --no-create-info --complete-insert --replace --set-gtid-purged=OFF --skip-triggers"
 
 		if [ -z "$DB" ]
 		then
