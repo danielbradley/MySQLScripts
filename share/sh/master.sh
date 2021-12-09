@@ -37,14 +37,14 @@ function realpath()
         echo $lnkpath
 }
 
-FULL=`realpath $0`
-NAME=`basename $0`
-SH=`dirname $FULL`
-SHARE=`dirname $SH`
-BASE=`dirname $SHARE`
+FULL=`realpath "$0"`
+NAME=`basename "$0"`
+SH=`dirname "$FULL"`
+SHARE=`dirname "$SH"`
+BASE=`dirname "$SHARE"`
 
-HOST=$1
-BACKUP=$3
+HOST="$1"
+BACKUP="$3"
 MYSQL=`which mysql`
 MYSQLDUMP=`which mysqldump`
 OSNAME=`uname`
