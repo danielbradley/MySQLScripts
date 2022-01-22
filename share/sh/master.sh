@@ -137,10 +137,7 @@ function main()
 		use_ssl="FALSE"
 	fi
 
-	if [ "TRUE" = "$use_ssl" -a ! -f "share/ssl/${HOST}/server-ca.pem" ]
-	then
-
-	elif [ "TRUE" = "$use_ssl" ]
+	if [ "TRUE" = "$use_ssl" ]
 	then
 		if [ ! -f "share/ssl/${HOST}/server-ca.pem" -a ! -f "share/ssl/${HOST}/rds-combined-ca-bundle.pem" ]
 		then
