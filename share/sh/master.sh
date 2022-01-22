@@ -160,7 +160,7 @@ function main()
 		then
 			flags+="         -h $ip"
 	                flags+="   --ssl-ca=share/ssl/${HOST}/rds-combined-ca-bundle.pem"
-			flags=+" --ssl-mode=VERIFY_IDENTITY"
+			flags+=" --ssl-mode=VERIFY_IDENTITY"
 		fi
 
 	else
