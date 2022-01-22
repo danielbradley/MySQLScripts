@@ -139,21 +139,32 @@ function main()
 
 	if [ "TRUE" = "$use_ssl" -a ! -f "share/ssl/${HOST}/server-ca.pem" ]
 	then
-		echo "ERROR: could not find key/cert for remote database host in: share/ssl/${HOST}/"
-		usage
 
 	elif [ "TRUE" = "$use_ssl" ]
 	then
-		if [ "" = "$ip" ]
+		if [ ! -f "share/ssl/${HOST}/server-ca.pem" -a ! -f "share/ssl/${HOST}/rds-combined-ca-bundle.pem" ]
+		then
+			echo "ERROR: could not find key/cert for remote database host in: share/ssl/${HOST}/"
+			usage
+
+		elif [ "" = "$ip" ]
 		then
 			echo "ERROR: could not find IP for remote db host: $HOST"
 			exit -1
-		fi
 
-		flags+="     -h $ip"
-		flags+="   --ssl-ca=share/ssl/${HOST}/server-ca.pem"
-		flags+="  --ssl-key=share/ssl/${HOST}/client-key.pem"
-		flags+=" --ssl-cert=share/ssl/${HOST}/client-cert.pem"
+		elif [ -f "share/ssl/${HOST}/server-ca.pem" ]
+		then
+			flags+="         -h $ip"
+			flags+="   --ssl-ca=share/ssl/${HOST}/server-ca.pem"
+			flags+="  --ssl-key=share/ssl/${HOST}/client-key.pem"
+			flags+=" --ssl-cert=share/ssl/${HOST}/client-cert.pem"
+
+		elif [ -f "share/ssl/${HOST}/rds-combined-ca-bundle.pem" ]
+		then
+			flags+="         -h $ip"
+	                flags+="   --ssl-ca=share/ssl/${HOST}/rds-combined-ca-bundle.pem"
+			flags=+" --ssl-mode=VERIFY_IDENTITY"
+		fi
 
 	else
 		flags+=" -h ${HOST}"
