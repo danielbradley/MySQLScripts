@@ -126,7 +126,7 @@ function usage()
 
 function main()
 {
-	local ip=`dig +short $HOST`
+	local ip=`dig +short $HOST | head -1`
 	local use_ssl="TRUE"
 	local flags="--force -u $USER -p"
 	local version=`cat VERSION`
