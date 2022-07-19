@@ -149,6 +149,12 @@ function main()
 			echo "ERROR: could not find IP for remote db host: $HOST"
 			exit -1
 
+		elif [ -f "share/ssl/${HOST}/rds-combined-ca-bundle.pem" ]
+		then
+			flags+="         -h $ip"
+	                flags+="   --ssl-ca=share/ssl/${HOST}/rds-combined-ca-bundle.pem"
+			flags+=" --ssl-mode=VERIFY_IDENTITY"
+
 		elif [ -f "share/ssl/${HOST}/server-ca.pem" ]
 		then
 			flags+="         -h $ip"
@@ -156,11 +162,6 @@ function main()
 			flags+="  --ssl-key=share/ssl/${HOST}/client-key.pem"
 			flags+=" --ssl-cert=share/ssl/${HOST}/client-cert.pem"
 
-		elif [ -f "share/ssl/${HOST}/rds-combined-ca-bundle.pem" ]
-		then
-			flags+="         -h $ip"
-	                flags+="   --ssl-ca=share/ssl/${HOST}/rds-combined-ca-bundle.pem"
-			flags+=" --ssl-mode=VERIFY_IDENTITY"
 		fi
 
 	else
