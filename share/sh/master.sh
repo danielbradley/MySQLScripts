@@ -130,7 +130,16 @@ function main()
 	local use_ssl="TRUE"
 	local flags="--force -u $USER -p"
 	local version=`cat VERSION`
-	local install=`ls _install/${version}/*.sql`
+	local install=""
+	
+	if [ -d "_install/${version}" ]
+	then
+		install=`ls _install/${version}/*.sql`
+
+	elif [ -d "share/install/${version}" ]
+	then
+		install=`ls share/install/${version}/*.sql`
+	fi
 
 	if [ "192" = "${ip:0:3}" -o "127" = "${ip:0:3}" ]
 	then
