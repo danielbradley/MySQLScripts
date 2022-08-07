@@ -141,7 +141,7 @@ function main()
 		install=`ls share/install/${version}/*.sql`
 	fi
 
-	if [ "192" = "${ip:0:3}" -o "127" = "${ip:0:3}" ]
+	if [ "10." = "${ip:0:3}" -o "127." = "${ip:0:4}" -o "172.16." = "${ip:0:7}" -o "192.168." = "${ip:0:8}" ]
 	then
 		use_ssl="FALSE"
 	fi
