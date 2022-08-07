@@ -131,7 +131,8 @@ function main()
 	local flags="--force -u $USER -p"
 	local version=`cat VERSION`
 	local install=""
-	
+	let   second=`echo "$ip" | cut -d'.' -f2`
+
 	if [ -d "_install/${version}" ]
 	then
 		install=`ls _install/${version}/*.sql`
@@ -141,7 +142,11 @@ function main()
 		install=`ls share/install/${version}/*.sql`
 	fi
 
-	if [ "10." = "${ip:0:3}" -o "127." = "${ip:0:4}" -o "172.16." = "${ip:0:7}" -o "192.168." = "${ip:0:8}" ]
+	if   [ "10." = "${ip:0:3}" -o "127." = "${ip:0:4}" -o "192.168." = "${ip:0:8}" ]
+	then
+		use_ssl="FALSE"
+
+	elif [ "172." = "${ip:0:4}" -a "16" -le "$second" -a "$second" -le "31" ]
 	then
 		use_ssl="FALSE"
 	fi
