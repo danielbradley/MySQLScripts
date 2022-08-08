@@ -144,6 +144,18 @@ function main()
 	if   [ "" = "${ip}" ]
 	then
 		use_ssl="FALSE"
+	
+	else
+		local second=`echo "$ip" | cut -d'.' -f2`
+
+		if   [ "10." = "${ip:0:3}" -o "127." = "${ip:0:4}" -o "192.168." = "${ip:0:8}" ]
+		then
+			use_ssl="FALSE"
+
+		elif [ "172." = "${ip:0:4}" -a "16" -le "$second" -a "$second" -le "31" ]
+		then
+			use_ssl="FALSE"
+		fi
 	fi
 
 	if [ "TRUE" = "$use_ssl" ]
