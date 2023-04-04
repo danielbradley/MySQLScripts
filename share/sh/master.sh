@@ -53,6 +53,7 @@ BACKUP="$3"
 MYSQL=`which mysql`
 MYSQLDUMP=`which mysqldump`
 OSNAME=`uname`
+CPU=`uname -m`
 MODE="???"
 DATE=`date +%Y-%m-%d`
 
@@ -88,7 +89,7 @@ if [ "" = "$MYSQL" ]
 then
 	if [ "Darwin" = "$OSNAME" ]
 	then
-		MYSQL=${BASE}/libexec/mysql/sbin/$OSNAME/mysql
+		MYSQL=${BASE}/libexec/mysql/sbin/$OSNAME-$CPU/bin/mysql
 	else
 		echo "Error: could not locate 'mysql'"
 		exit -1
@@ -99,7 +100,7 @@ if [ "" = "$MYSQLDUMP" ]
 then
 	if [ "Darwin" = "$OSNAME" ]
 	then
-		MYSQLDUMP=${BASE}/libexec/mysql/sbin/$OSNAME/mysqldump
+		MYSQLDUMP=${BASE}/libexec/mysql/sbin/$OSNAME-$CPU/bin/mysqldump
 	else
 		echo "Error: could not locate 'mysqldump'"
 		exit -1
@@ -151,7 +152,7 @@ function main()
 		use_ssl="FALSE"
 	
 	else
-		local second=`echo "$ip" | cut -d'.' -f2`
+		let second=`echo "$ip" | cut -d'.' -f2`
 
 		if   [ "10." = "${ip:0:3}" -o "127." = "${ip:0:4}" -o "192.168." = "${ip:0:8}" ]
 		then
