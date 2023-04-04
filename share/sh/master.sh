@@ -23,10 +23,15 @@ function lnkpath()
         if [ -z "$linkpath" ]
         then
                 echo $1
+	
+	elif [ "/" == "${linkpath:0:1}" ]
+	then
+		echo $linkpath
 
         else
                 echo $dirname/$linkpath
-        fi
+
+	fi
 }
 
 function realpath()
