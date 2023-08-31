@@ -1,10 +1,17 @@
 #!/bin/bash
 
 COLUMN_STATISTICS_FLAG=""
+TCP=""
 
 if [ "$1" = "--ignore-column-statistics" ]
 then
 	COLUMN_STATISTICS="--column-statistics=0"
+	shift
+fi
+
+if [ "$1" = "--tcp" ]
+then
+	TCP="--protocol=TCP"
 	shift
 fi
 
@@ -134,7 +141,7 @@ function main()
 {
 	local ip=`dig +short $HOST | head -1 | sed 's/\.$//'`
 	local use_ssl="TRUE"
-	local flags="--force -u $USER -p"
+	local flags="--force -u $USER -p $TCP"
 	local version=`cat VERSION`
 	local install=""
 
