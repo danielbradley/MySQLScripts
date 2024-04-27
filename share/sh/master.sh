@@ -141,7 +141,7 @@ function main()
 {
 	local ip=`dig +short $HOST | head -1 | sed 's/\.$//'`
 	local use_ssl="TRUE"
-	local flags="--force -u $USER -p $TCP"
+	local flags="--force -u $USER -p $TCP --default-character-set=utf8"
 	local version=`cat VERSION`
 	local install=""
 
