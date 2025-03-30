@@ -191,7 +191,7 @@ function ConfigureFlags()
             flags+=" --ssl-cert=${SSL_DIR}/${DB_HOST}/client-cert.pem"
 
         else
-            flags+=""
+            flags+=" -h ${DB_HOST}"
         fi
 
         Error "CNAME:  ${CNAME}"
