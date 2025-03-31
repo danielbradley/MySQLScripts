@@ -177,7 +177,7 @@ function ConfigureFlags()
     if [ -n "$CNAME" ]
     then
 
-        if [ "$CNAME" != "${CNAME/.amazonaws.com/}" ]
+        if [ "$CNAME" != "${CNAME/.amazonaws.com/}" -a "$CNAME" == "${CNAME/ec2-/}" ]
         then
             flags+=" -h ${CNAME}"
             flags+=" --ssl-ca=${SSL_DIR}/amazonaws.com/rds-combined-ca-bundle.pem"
