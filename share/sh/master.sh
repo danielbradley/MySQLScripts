@@ -3,8 +3,8 @@
 #
 #   Usage:
 #
-#   a)  ./backup.sh  <DB HOST> <DB NAME> [BACKUP DIR] --defaults /home/ubuntu/conf/mysql.cnf --encrypt /home/ubuntu/conf/mcrypt.cnf --exclude base_exceptions
-#   b)  ./install.sh <DB HOST> <DB NAME> <DB Backup>
+#   a)  ./backup.sh  <DB HOST> <DB NAME> [BACKUP DIR] [--data-only] --defaults /home/ubuntu/conf/mysql.cnf --encrypt /home/ubuntu/conf/mcrypt.cnf --exclude base_exceptions
+#   b)  ./install.sh <DB HOST> <DB NAME> [BACKUP FILE]
 #   c)  ./mysql.sh   <DB HOST> [USER]
 #
 
