@@ -19,7 +19,7 @@
    MYSQLDUMP=`which mysqldump`
       OSNAME=`uname`
          CPU=`uname -m`
-     VERSION=`cat VERSION`
+     VERSION=
      SSL_DIR="share/ssl"
   DB_INSTALL=""
     DEFAULTS=""
@@ -61,12 +61,12 @@ function Usage()
 
 function Main()
 {
-    if   [ "YES" = `IsInvalidDBHost` ]
+    if   IsInvalidDBHost "$CNAME"
     then
         echo "ERROR: could not resolve: ${DB_HOST}/"
         Usage
 
-    elif [ -z "$DB_NAME" -a "$NAME" != "mysql.sh" ]
+    elif [[ -z "$DB_NAME" && "$NAME" != "mysql.sh" ]]
     then
         echo "ERROR: no database name specified for: ${NAME}"
         Usage
@@ -121,23 +121,38 @@ function Main()
     fi
 }
 
+function ContainsDots()
+{
+    local cname=$1
+
+    if [[ "$cname" != "${cname/./}" ]]
+    then
+        return 0;
+
+    else
+        return 1;
+    fi
+}
+
 function IsInvalidDBHost()
 {
-    local invalid="No"
+    local cname=$1
 
-    if [ -n "$CNAME" -a "$CNAME" != "${CNAME/./}" ]
+    if [[ -n "$cname" ]] && ContainsDots "$cname"
     then
-	echo "Looking up DNS for: $CNAME"
+        local dns_name="$(dig +short "$cname")"
 
-        local check=`dig +short $CNAME`
-
-        if [ -z "$check" ]
+        if [ -n "$dns_name" ]
         then
-            invalid="YES"
+            echo "Found $cname --> $dns_name"
+            return 1
+
+        else
+            return 0 # Invalid
         fi
     fi
 
-    echo "${invalid}"
+    return 1 # Valid
 }
 
 function IsInvalidProg()
@@ -192,9 +207,6 @@ function ConfigureFlags()
         else
             flags+=" -h ${DB_HOST}"
         fi
-
-        Error "CNAME:  ${CNAME}"
-        Error "DBHost: ${DB_HOST}"
 
     else
         flags+=" -h ${DB_HOST}"
@@ -287,14 +299,19 @@ then
     DB_BACKUP="./_bak"
 fi
 
-if   [ -d "_install/${VERSION}" ]
+if [ -f "VERSION" ]
 then
-    DB_INSTALL=`ls _install/${VERSION}/*.sql`
+    VERSION="$(cat "VERSION")"
 
-elif [ -d "share/install/${VERSION}" ]
-then
-    DB_INSTALL=`ls share/install/${VERSION}/*.sql`
+    if   [ -d "_install/${VERSION}" ]
+    then
+        DB_INSTALL=`ls _install/${VERSION}/*.sql`
 
+    elif [ -d "share/install/${VERSION}" ]
+    then
+        DB_INSTALL=`ls share/install/${VERSION}/*.sql`
+
+    fi
 fi
 
 #
@@ -383,12 +400,18 @@ do
             fi
             ;;
     esac
+done
 
-    if [ -n "$DB_HOST" -a "$DB_HOST" != "${DB_HOST/./}" ]
+if [ -n "$DB_HOST" -a "$DB_HOST" != "${DB_HOST/./}" ]
+then
+    CNAME=`dig +short $DB_HOST | head -1 | sed 's/\.$//'`
+
+    if [ -n "$CNAME" ]
     then
-        CNAME=`dig +short $DB_HOST | head -1 | sed 's/\.$//'`
+        echo "Found $DB_HOST --> $CNAME"
+
     fi
 
-done
+fi
 
 Main
