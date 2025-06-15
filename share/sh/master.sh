@@ -107,7 +107,7 @@ function Main()
 
         if   [ "$NAME" = "backup.sh" ]
         then
-            Backup "${FLAGS}"
+            Backup  "${FLAGS}"
 
         elif [ "$NAME" = "install.sh" ]
         then
@@ -115,8 +115,7 @@ function Main()
 
         elif [ "$NAME" = "mysql.sh" ]
         then
-echo        MySQL "${FLAGS}"
-            MySQL "${FLAGS}"
+            MySQL   "${FLAGS}"
 
         fi
     fi
